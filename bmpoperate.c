@@ -228,10 +228,10 @@ int main(void)
 	//이것으로 깨달은 점: k = 0 이면 RED, k =1 이면 BLUE, k = 2이면 GREEN이다
 	//RED, BLUE, GREEN 순으로 InputImg는 이루어져 있다.
 	
-	for(int i =0; i < 400; i++){ //✔
-		for(int j = 0; j < 300; j++){
+	for(int i = 0; i < 400; i++){ //가로의 길이:400 그러나 이걸 조정하면 가로가 아니라 전체의 세로가 수정됌
+		for(int j = 0; j < 400; j++){ 
 			for(int k = 0; k < 3; k++){
-				OutputImg[i][j][k] = (InputImg[i][j][0]+InputImg[i][j][1]+InputImg[i][j][2])/3;
+				OutputImg[i][j][k] = InputImg[i][j][k];
 			}
 		}
 	}
@@ -239,30 +239,10 @@ int main(void)
 	fwrite(&filel, sizeof(BitmapInfoHeader), 1, frv);
 	fwrite(&hRGB, sizeof(RGBtriple), 256, frv);
 	fwrite(OutputImg, 300*400*3, 1, frv);
-	//색 변경: Red -> Blue / Blue -> Green / Green -> Red
-	//색 반전: OutputImg[i][j][k] = 255 - InputImg[i][j][k];
+	//반전 Red -> Blue / Blue -> Green / Green -> Red
 	//회전 : OutputImg[i][j][k] = InputImg[400-i][300-j][k];
-	//흑백 : OutputImg[i][j][k] = (InputImg[i][j][0]+InputImg[i][j][1]+InputImg[i][j][2])/3
-	//InputImg와 OutputImg는 unsigned char형이지만, 255에서 빼거나 다 합쳐서 평균값을 구하는 등의
-	//수학적 계산으로 여러 편집을 할 수 있다.
 	
-	unsigned char NewOutputImg[800][300][3];
 	
-	for(int i = 0; i < 400; i++){
-		for(int j = 0; j < 600; j++){
-			for(int k = 0; k < 3; k++){
-				NewOutputImg[2*i][j][k] = InputImg[i][j][k];
-				NewOutputImg[i][2*j][k] = InputImg[i][j][k];
-				NewOutputImg[2*i-1][j][k] = 0;
-				NewOutputImg[i][2*j-1][k] = 0;
-			}
-		}
-	}
-	fwrite(&fileh, sizeof(BitmapFileHeader), 1, frv);
-	fwrite(&fileh.bfSize, 800*600*3, 1, frv);
-	fwrite(&filel, sizeof(BitmapInfoHeader), 1, frv);
-	fwrite(&hRGB, sizeof(RGBtriple), 256, frv);
-	fwrite(NewOutputImg, 800*600*3, 1, frv);
 	
 	
 	
